@@ -1,3 +1,5 @@
+from random import choice
+
 import pytest
 
 from PetStoreTestProj.schemas.schemas import Pet, PetStatus
@@ -56,3 +58,48 @@ def test_create_pet(client_api, pet):
     assert created_pet.status == get_pet_by_created_id.status, (
         "category созданного животного не совпадает с заданным"
     )
+
+
+@pytest.mark.smoke
+# в идеале опрашивать из базы , будем получать всегда существ id
+# и сможем сверять данные
+@pytest.mark.parametrize("pet_id", [id_ for id_ in range(7, 9, 1)])
+def test_update_pet_by_id(client_api, need_faker, pet_id):
+    """Тест проверяет возможность обновления данных питомца по ID"""
+    query = {
+        "status": choice([stat.value for stat in PetStatus]),
+        "name": need_faker.first_name()
+    }
+    response = client_api.update_pet_by_id(pet_id=pet_id, query=query)
+    assert response.status_code == 200, (
+        "Ожидался 200 статус код"
+    )
+    get_upd_pet_response = client_api.get_pet_by_id(pet_id)
+    json_response_get = get_upd_pet_response.json()
+    assert get_upd_pet_response.status_code == 200, (
+        "Ожидался 200 статус код"
+    )
+    assert json_response_get, (
+        "Ожидалось тело ответа"
+    )
+    get_upd_pet = Pet.parse_obj(json_response_get)
+    assert get_upd_pet.status == query["status"], (
+        "status не соответсвует выбранному"
+    )
+    assert get_upd_pet.name == query["name"], (
+        "name не соответсвует выбранному"
+    )
+
+
+@pytest.mark.smoke
+# в идеале опрашивать из базы , будем получать всегда существ id
+# и сможем сверять данные
+@pytest.mark.parametrize("pet_id", [id_ for id_ in range(7, 9, 1)])
+def test_get_pet_by_id(client_api, pet_id):
+    """Тест проверяет возможность поиска питомца по ID"""
+    response = client_api.get_pet_by_id(pet_id=pet_id)
+    assert response.status_code == 200, "Ожидался 200 статус код"
+    json_response = response.json()
+    assert json_response, "Ожидалось тело ответа"
+    pet = Pet.parse_obj(json_response)
+    assert pet.id == pet_id, "ID не соответствует искомому"

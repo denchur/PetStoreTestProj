@@ -44,16 +44,21 @@ class PerStoreApiClient():
         )
         return response
 
-    def update_pet_by_id(self, pet_id: int):
+    def update_pet_by_id(self, pet_id: int, query):
         """Обновляет питомца по ID"""
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
         response = self.session.post(
             url=f'{self.base_url}/pet/{pet_id}',
+            data=query,
+            headers=headers
         )
         return response
 
     def del_pet_by_id(self, pet_id: int):
         """Удаляет питомца по ID"""
         response = self.session.delete(
-            url=f'{self.base_url}/pet/{pet_id}',
+            url=f'{self.base_url}/pet/{pet_id}'
         )
         return response

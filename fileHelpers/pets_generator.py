@@ -13,6 +13,7 @@ pets_status = [status.value for status in PetStatus]
 
 
 def create_category() -> Optional[Category]:
+    """Согдаёт категорию или оставляет её пустой"""
     if choice([True, False]):
         return Category(
             id=randint(1, 100),
@@ -22,6 +23,7 @@ def create_category() -> Optional[Category]:
 
 
 def create_tags() -> Optional[list[Tag]]:
+    """Согдаёт теги или оставляет их пустыми"""
     if choice([True, False]):
         return [
             Tag(id=randint(1, 100), name=fake.word())
@@ -31,6 +33,7 @@ def create_tags() -> Optional[list[Tag]]:
 
 
 def create_pet() -> Pet:
+    """Создаёт объект класса Pet"""
     return Pet(
         category=create_category(),
         name=fake.first_name(),
@@ -40,4 +43,7 @@ def create_pet() -> Pet:
     )
 
 
-pets_data = [create_pet() for _ in range(NUM_PETS)]
+def create_pets() -> list[Pet]:
+    """Создаёт список питомцев в количестве NUM_PETS"""
+    pets_data = [create_pet() for _ in range(NUM_PETS)]
+    return pets_data

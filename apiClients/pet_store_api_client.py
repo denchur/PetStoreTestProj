@@ -14,6 +14,7 @@ class PerStoreApiClient():
         }
 
     def get_pets_by_status(self, query):
+        """Получает питомца по статусу"""
         response = self.session.get(
             url=f'{self.base_url}/pet/findByStatus',
             params=query
@@ -21,6 +22,7 @@ class PerStoreApiClient():
         return response
 
     def create_pet(self, data_json):
+        """Создаёт питомца"""
         response = self.session.post(
             url=f'{self.base_url}/pet',
             json=data_json
@@ -28,6 +30,7 @@ class PerStoreApiClient():
         return response
 
     def update_or_create_pet(self, data_json):
+        """Обновляет или создаёт питомца"""
         response = self.session.put(
             url=f'{self.base_url}/pet',
             json=data_json
@@ -35,18 +38,21 @@ class PerStoreApiClient():
         return response
 
     def get_pet_by_id(self, pet_id: int):
+        """Получает питомца по ID"""
         response = self.session.get(
             url=f'{self.base_url}/pet/{pet_id}',
         )
         return response
 
     def update_pet_by_id(self, pet_id: int):
+        """Обновляет питомца по ID"""
         response = self.session.post(
             url=f'{self.base_url}/pet/{pet_id}',
         )
         return response
 
     def del_pet_by_id(self, pet_id: int):
+        """Удаляет питомца по ID"""
         response = self.session.delete(
             url=f'{self.base_url}/pet/{pet_id}',
         )

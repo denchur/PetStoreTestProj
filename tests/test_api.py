@@ -1,11 +1,13 @@
 import pytest
 
 from PetStoreTestProj.schemas.schemas import Pet, PetStatus
-from PetStoreTestProj.fileHelpers.pets_generator import pets_data
+from PetStoreTestProj.fileHelpers.pets_generator import create_pets
 
 
+@pytest.mark.smoke
 @pytest.mark.parametrize("pet_status", [status.value for status in PetStatus])
 def test_get_pet_by_status(client_api, pet_status):
+    """Тест проверяет эндпоинт для поиска питомцев по статусу"""
     query = {"status": pet_status}
     response = client_api.get_pets_by_status(query)
     assert response.status_code == 200, "Ожидался 200 статус код"
@@ -18,8 +20,17 @@ def test_get_pet_by_status(client_api, pet_status):
         )
 
 
-@pytest.mark.parametrize("pet", pets_data)
+@pytest.mark.smoke
+@pytest.mark.parametrize("pet", create_pets())
 def test_create_pet(client_api, pet):
+    """
+        Тест проверяет эндпоинт для создания питомцев
+        1) создаёт объект класса Pet на основе случайных данных
+        2) отпрвляет объект на эндпоинт
+        3) из поолученного ответа получает id питомца
+        4) запрошивает созданного питомца по id
+        5) сверяет отправленный и полученный объект класса Pet
+    """
     created_response = client_api.create_pet(data_json=pet.dict())
     assert created_response.status_code == 200, "Ожидался 200 статус код"
     json_response = created_response.json()
